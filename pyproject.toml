@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helium-studio"
+version = "0.1.0"
+description = "Local schematic editor and steady-state helium circuit simulator"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "Flask>=3.1,<4",
+    "numpy>=2.0,<3",
+    "scipy>=1.13,<2",
+    "CoolProp>=8.0,<9",
+]
+
+[project.optional-dependencies]
+comsol = ["MPh>=1.2,<2", "JPype1>=1.5,<2", "matplotlib>=3.9,<4"]
+dev = ["pytest>=8,<10", "build>=1.2,<2"]
+
+[project.scripts]
+helium-studio = "models.fluid_eda.app:main"
+
+[project.urls]
+Repository = "https://github.com/GeorgeHou0719/helium-studio"
+Issues = "https://github.com/GeorgeHou0719/helium-studio/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["models", "models.*"]
+
+[tool.setuptools.package-data]
+"models.fluid_eda" = ["static/*.js", "static/*.css", "templates/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -1,0 +1,185 @@
+{
+  "version": 1,
+  "name": "Continuous pump · Staged precooling circuit",
+  "settings": {
+    "engine": "comsol"
+  },
+  "components": [
+    {
+      "id": "pot",
+      "type": "source",
+      "label": "Saturated vapor pot",
+      "x": 180,
+      "y": 300,
+      "rotation": 270,
+      "params": {
+        "mode": "saturation",
+        "pressure_Pa": 15.57,
+        "temperature_K": 1.0,
+        "expression": "15.57",
+        "heat_load_W": 0.0
+      }
+    },
+    {
+      "id": "pipe1",
+      "type": "pipe",
+      "label": "Suction pipe",
+      "x": 440,
+      "y": 160,
+      "rotation": 0,
+      "params": {
+        "length_m": 0.5,
+        "outer_diameter_m": 0.0635,
+        "wall_thickness_m": 0.00762,
+        "T_a_K": 1.0,
+        "T_b_K": 293.15,
+        "wall_boundary": "adiabatic"
+      }
+    },
+    {
+      "id": "pump1",
+      "type": "pump",
+      "label": "Circulation pump",
+      "x": 740,
+      "y": 160,
+      "rotation": 0,
+      "params": {
+        "mode": "forward_backflow",
+        "speed_m3_s": 0.004,
+        "expression": "Pin*S/(R*Tin)",
+        "outlet_temperature_K": 293.15,
+        "forward_speed_m3_s": 0.24,
+        "compression_ratio": 100000000.0,
+        "forward_speed_curve": [],
+        "compression_curve": [],
+        "max_inlet_pressure_Pa": null,
+        "max_outlet_pressure_Pa": null,
+        "max_throughput_Pa_m3_s": null
+      }
+    },
+    {
+      "id": "pipe2",
+      "type": "pipe",
+      "label": "Staged precooling pipe",
+      "x": 740,
+      "y": 440,
+      "rotation": 180,
+      "params": {
+        "length_m": 1.5,
+        "outer_diameter_m": 0.0635,
+        "wall_thickness_m": 0.00762,
+        "T_a_K": 293.15,
+        "T_b_K": 4.0,
+        "wall_boundary": "prescribed",
+        "wall_profile": [
+          {
+            "length_m": 0.3,
+            "T_start_K": 293.15,
+            "T_end_K": 293.15
+          },
+          {
+            "length_m": 0.3,
+            "T_start_K": 293.15,
+            "T_end_K": 35.0
+          },
+          {
+            "length_m": 0.3,
+            "T_start_K": 35.0,
+            "T_end_K": 35.0
+          },
+          {
+            "length_m": 0.3,
+            "T_start_K": 35.0,
+            "T_end_K": 4.0
+          },
+          {
+            "length_m": 0.3,
+            "T_start_K": 4.0,
+            "T_end_K": 4.0
+          }
+        ]
+      }
+    },
+    {
+      "id": "jt1",
+      "type": "jt",
+      "label": "CuNi J–T capillary",
+      "x": 440,
+      "y": 440,
+      "rotation": 180,
+      "params": {
+        "law": "capillary",
+        "material": "CuNi",
+        "diameter_m": 0.0001,
+        "length_m": 0.1,
+        "impedance_mode": "measured",
+        "impedance_m_inv3": 3.2e+16,
+        "discharge_coefficient": 0.7
+      }
+    }
+  ],
+  "wires": [
+    {
+      "id": "w1",
+      "from": {
+        "component": "pot",
+        "port": "b"
+      },
+      "to": {
+        "component": "pipe1",
+        "port": "a"
+      }
+    },
+    {
+      "id": "w2",
+      "from": {
+        "component": "pipe1",
+        "port": "b"
+      },
+      "to": {
+        "component": "pump1",
+        "port": "a"
+      }
+    },
+    {
+      "id": "w3",
+      "from": {
+        "component": "pump1",
+        "port": "b"
+      },
+      "to": {
+        "component": "pipe2",
+        "port": "a"
+      }
+    },
+    {
+      "id": "w4",
+      "from": {
+        "component": "pipe2",
+        "port": "b"
+      },
+      "to": {
+        "component": "jt1",
+        "port": "a"
+      }
+    },
+    {
+      "id": "w5",
+      "from": {
+        "component": "jt1",
+        "port": "b"
+      },
+      "to": {
+        "component": "pot",
+        "port": "a"
+      }
+    }
+  ],
+  "assumptions": [
+    "User specified: Precooler outer-wall total length 1.5 m; five 300 mm segments: 293.15 K, 293.15→35 K, 35 K, 35→4 K, 4 K. J–T inlet boundary: 4 K.",
+    "User specified: Both 304 stainless-steel pipes have outer diameter 63.5 mm and wall thickness 7.62 mm; suction length 500 mm, adiabatic outer wall, endpoints 1 K and 293.15 K.",
+    "User specified: Saturated vapor pot at 1 K; forward–backflow pump with nominal forward speed 240 L/s, compression ratio 1e8, and discharge temperature 293.15 K.",
+    "User-selected literature restriction: CuNi capillary, bore 0.10 mm, length 100 mm, measured impedance z=3.2e16 m^-3. This is not a measurement of the user apparatus.",
+    "No conduction is exchanged between components; gas enthalpy is retained in the pot balance. Two-phase hydraulics require the Two-phase pot (1D) engine."
+  ]
+}

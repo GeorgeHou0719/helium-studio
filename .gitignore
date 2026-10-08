@@ -1,0 +1,41 @@
+# Local environments, Python and tool caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+coverage.xml
+*.egg-info/
+build/
+dist/
+
+# Runtime data, COMSOL models and historical research artifacts
+var/
+results/
+audit/
+logs/
+human_debugging/
+*.log
+*.mph
+*.mphbin
+*.mph.lock
+*.mph.status
+*.mph.recovery/
+*.tmp
+*.bak
+
+# Local configuration, credentials and editor state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+node_modules/
